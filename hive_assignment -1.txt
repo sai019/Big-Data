@@ -1,0 +1,117 @@
+1. Download vechile sales data
+
+  ans - downloaded the data set from the link to the device local memory.
+
+2. Store raw data into hdfs location
+
+   ans - the data set is copied to the cloudera vm local memory via filezilla and then the data set is copied to hdfs loatoin by using 
+         below command 
+                   ***  before that the path in cli is changed to  " /tmp/hive_class/ " where my sales_order_data.csv is stored.
+           
+                    command - hadoop fs -put sales_order_data.csv/ /tmp/hive_class/
+
+
+3. Create a internal hive table "sales_order_csv" which will store csv data sales_order_csv .. make sure to skip header row while creating table
+  
+          *** to skip the header row - tblproperties ("skip.header.line.count" = "1"); is used.        
+
+  ans - create table sales_order_csv
+     (
+     ORDERNUMBER int,
+     QUANTITYORDERED int,
+     PRICEEACH float,
+     ORDERLINENUMBER int,
+     SALES float,
+     STATUS string,
+     QTR_ID int,
+     MONTH_ID int,
+     YEAR_ID int,
+     PRODUCTLINE string,
+     MSRP int,
+     PRODUCTCODE string,
+     PHONE string,
+     CITY string,
+     STATE string,
+     POSTALCODE string,
+     COUNTRY string,
+     TERRITORY string,
+     CONTACTLASTNAME string,
+     CONTACTFIRSTNAME string,
+     DEALSIZE string)
+     row format delimited
+     fields terminated by ','
+     tblproperties ("skip.header.line.count" = "1"); 
+
+
+4. Load data from hdfs path into "sales_order_csv" 
+
+    ans - load data inpath '/tmp/hive_class/' into table sales_order_csv;
+
+
+5. Create an internal hive table which will store data in ORC format "sales_order_orc"
+
+   ans -  create table sales_oder_orc
+     (
+     ORDERNUMBER int,
+     QUANTITYORDERED int,
+     PRICEEACH float,
+     ORDERLINENUMBER int,
+     SALES float,
+     STATUS string,
+     QTR_ID int,
+     MONTH_ID int,
+     YEAR_ID int,
+     PRODUCTLINE string,
+     MSRP int,
+     PRODUCTCODE string,
+     PHONE string,
+     CITY string,
+     STATE string,
+     POSTALCODE string,
+     COUNTRY string,
+     TERRITORY string,
+     CONTACTLASTNAME string,
+     CONTACTFIRSTNAME string,
+     DEALSIZE string)
+     row format delimited
+     fields terminated by ',';
+
+6. Load data from "sales_order_csv" into "sales_order_orc"
+ 
+   ans - from sales_order_csv insert overwrite table sales_order_orc select *;
+
+
+Perform below menioned queries on "sales_order_orc" table :
+
+   a. Calculatye total sales per year
+
+    ans - select year_id,sum(sales) as sales_per_year from sales_order_orc group by year_id;
+
+     
+   b. Find a product for which maximum orders were placed
+   
+       ans - select productline,max(quantityordered) as max_orders_placed from sales_order_orc group by productline;
+
+
+   c. Calculate the total sales for each quarter
+     
+      ans - select qtr_id, sum(sales) as total_sales from sales_order_orc group by qtr_id;
+
+   d. In which quarter sales was minimum
+
+      ans - 
+
+   e. In which country sales was maximum and in which country sales was minimum
+
+      ans - 
+ 
+   f. Calculate quartelry sales for each city
+
+      ans - select city,qtr_id,sum(sales) as quartelry_sales from sales_order_orc group by qtr_id,city;
+
+   h. Find a month for each year in which maximum number of quantities were sold
+
+      ans - select month_id,year_id,max(quantityordered) as max_qnty_ordered from sales_order_orc group by month_id,year_id;
+     
+      
+  

@@ -1,0 +1,107 @@
+##1. Create a schema based on the given dataset
+
+create table Agentlogin
+ (sl_no int,
+ agent string,
+ date string,
+ login_time string,
+ logout_time string,
+ duration string)
+ row format delimited
+ fields terminated by ','
+ tblproperties ("skip.header.line.count" = "1");
+
+  ** LOAD DATA**
+load data local inpath 'file:///tmp/hive_class/AgentLogingReport.csv' into table Agentlogin; 
+
+
+##1. Create a schema based on the given dataset
+
+create table agentperformance
+(
+ sl_no int,
+ date string,
+ agent_name string,
+ total_chats int,
+ average_response_time string,
+ average_resolution_time string,
+ average_rating float,
+ total_feedback int)
+ row format delimited
+ fields terminated by ','
+ tblproperties ("skip.header.line.count" = "1");
+
+
+1. List of all agents' names.
+
+    select distinct(agent_name) from agentperformance;
+
+
+2. Find out agent average rating.
+
+    select agent_name,average_rating from agentperformance;
+
+
+3. Total working days for each agents
+
+  ***unsloved***
+
+4. Total query that each agent have taken
+
+    select agent_name,sum(total_chats) as total_query from agentperformance group by agent_name;
+
+
+5. Total Feedback that each agent have received.
+
+    select agent_name,sum(total_feedback) as total_feedback  from agentperformance group by agent_name;
+
+6. Agent name who have average rating between 3.5 to 4.
+
+    select agent_name,average_rating from agentperformance where average_rating between 3.5 and 4;
+
+
+7.  Agent name who have rating less than 3.5.
+
+       select agent_name,average_rating from agentperformance where average_rating < 3.5;
+
+
+8. Agent name who have rating more than 4.5.
+
+      select agent_name,average_rating from agentperformance where average_rating > 4.5;
+
+
+9.  How many feedback agents have received more than 4.5 average.
+
+       select agent_name,average_rating,total_feedback from agentperformance where average_rating > 4.5;
+
+
+10.  average weekly response time for each agent.
+
+      **unsolved**
+
+11.  average weekly resolution time for each agents.
+
+      **unsloved**
+
+12. Find the number of chat on which they have received a feedback.
+
+       select agent_name,total_chats,total_feedback from agentperformance where total_feedback > 0;
+
+
+13.  Total contribution hour for each and every agents weekly basis.
+
+        **unsolved**
+
+
+14.  Perform inner join, left join and right join based on the agent column and after joining the table export that data into your local system.
+
+        inner join :-   select * from agentlogin inner join agentperformance on agentlogin.agent=agentperformance.agent_name;
+        
+        left join : -   select * from agentlogin left join agentperformance on agentlogin.agent=agentperformance.agent_name;
+
+        right join :-   select * from agentlogin right join agentperformance on agentlogin.agent=agentperformance.agent_name;
+
+
+15.  Perform partitioning on top of the agent column and then on top of that perform bucketing for each partitioning.
+
+            **unsolved**
